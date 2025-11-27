@@ -67,14 +67,14 @@ Estruturas de dados (Árvore Binária de Busca)
 Recursão para busca, inserção, impressão e balanceamento
 
 # 📦 Instalação
-# 1. Instale as dependências #
+## 1. Instale as dependências #
 O projeto inclui um arquivo requirements.txt, contendo:
 customtkinter
 
-# Instale com: #
+### Instale com: #
 pip install -r requirements.txt
 
-# 2. Execute o programa # 
+## 2. Execute o programa # 
 python main.py
 
 🖼 Interface da Aplicação
@@ -125,8 +125,8 @@ Atualização da área de visualização
 ```
 
 🧪 Exemplo de Entrada
-# 15, 6, 18, 3, 7, 17, 20, 2, 4, 13, 9, 10, 8, 16, 19 #
-# A aplicação automaticamente:
+## 15, 6, 18, 3, 7, 17, 20, 2, 4, 13, 9, 10, 8, 16, 19 
+### A aplicação automaticamente:
 
 Ordena os valores
 
