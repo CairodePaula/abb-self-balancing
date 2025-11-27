@@ -2,7 +2,7 @@
 
 Este projeto implementa uma Árvore Binária de Busca (ABB) em Python com uma interface gráfica moderna construída utilizando Tkinter e CustomTkinter.
 
-A aplicação permite:
+# A aplicação permite:
 
 ➕ Adicionar elementos
 
@@ -14,7 +14,7 @@ A aplicação permite:
 
 🖥️ Visualizar a estrutura da árvore em formato ASCII, incluindo galhos, posições e hierarquia
 
-🚀 Funcionalidades
+# 🚀 Funcionalidades
 ✔ Composição Inicial
 
 O usuário insere uma lista de valores (ex.: 15, 6, 18, 3, 7...)
@@ -40,7 +40,7 @@ Remove um elemento
 
 A estrutura é recriada para manter o balanceamento
 
-✔ Visualização Estruturada
+# ✔ Visualização Estruturada
 
 A árvore é exibida como um desenho ASCII, com nós, níveis e ramificações.
 
@@ -54,7 +54,7 @@ Exemplo:
   3     7   17    20
 ```
 
-🛠 Tecnologias Utilizadas
+# 🛠 Tecnologias Utilizadas
 
 Python 3.x
 
@@ -66,7 +66,7 @@ Estruturas de dados (Árvore Binária de Busca)
 
 Recursão para busca, inserção, impressão e balanceamento
 
-📦 Instalação
+# 📦 Instalação
 1. Clone o repositório
 git clone https://github.com/seu-usuario/seu-repositorio.git
 cd seu-repositorio
@@ -74,7 +74,6 @@ cd seu-repositorio
 2. Instale as dependências
 
 O projeto inclui um arquivo requirements.txt, contendo:
-
 customtkinter
 
 
@@ -97,7 +96,7 @@ Campo para inserir o valor da operação
 
 Exibição da árvore ASCII em tempo real
 
-🧠 Lógica da Árvore
+# 🧠 Lógica da Árvore
 Classe EstruturaBuscaBinaria
 
 Implementa:
@@ -124,7 +123,7 @@ Execução das operações (P / A / E)
 
 Atualização da área de visualização
 
-🗂 Estrutura do Projeto
+# 🗂 Estrutura do Projeto
 ```bash
 📁 projeto/
  ├── 📄 main.py            → Código completo da árvore + interface
@@ -136,7 +135,7 @@ Atualização da área de visualização
 15, 6, 18, 3, 7, 17, 20, 2, 4, 13, 9, 10, 8, 16, 19
 
 
-A aplicação automaticamente:
+# A aplicação automaticamente:
 
 Ordena os valores
 
