@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from customtkinter import *
+from customtkinter import * #pip install requirements
 
 class Vertice:
     def __init__(self, dado):
@@ -45,7 +45,6 @@ class EstruturaBuscaBinaria:
             elementos.append(vertice.dado)
             self._percurso_em_ordem(vertice.direita, elementos)
     
-    # --- NOVO METODO PARA CONSTRUCAO BALANCEADA ---
     def _compor_estrutura_balanceada_recursiva(self, elementos):
         if not elementos:
             return None
@@ -57,7 +56,6 @@ class EstruturaBuscaBinaria:
         vertice_inicio.direita = self._compor_estrutura_balanceada_recursiva(elementos[meio + 1:])
         
         return vertice_inicio
-    # ------------------------------------------------
 
     def eliminar(self, dado):
         if not self.buscar_dado(dado):
@@ -66,10 +64,8 @@ class EstruturaBuscaBinaria:
         lista_ordenada = self.obter_elementos_em_ordem()
         lista_ordenada.remove(dado)
         
-        # 1. Destroi o ponto de inicio (opcional, mas limpa a estrutura)
         self.ponto_inicial = None
         
-        # 2. Reconstroi usando o algoritmo de balanceamento
         self.ponto_inicial = self._compor_estrutura_balanceada_recursiva(lista_ordenada)
             
         return True, f"✅ Dado {dado} eliminado e o arranjo foi refeito/equilibrado."
@@ -202,7 +198,6 @@ class Estrutura_Interface:
             valores_iniciais = self.processar_entrada(texto_entrada)
             
             self.apb = EstruturaBuscaBinaria()
-            # Utilizar o metodo de equilibrio para a construcao inicial
             valores_iniciais.sort()
             self.apb.ponto_inicial = self.apb._compor_estrutura_balanceada_recursiva(valores_iniciais)
             
@@ -242,7 +237,6 @@ class Estrutura_Interface:
                 self.rotulo_status.configure(text_color="orange")
             else:
                 self.apb.adicionar_dado(valor)
-                # Recria a arvore de forma equilibrada apos a inclusao (para manter o balanceamento)
                 lista_ordenada = self.apb.obter_elementos_em_ordem()
                 self.apb.ponto_inicial = self.apb._compor_estrutura_balanceada_recursiva(lista_ordenada)
                 
