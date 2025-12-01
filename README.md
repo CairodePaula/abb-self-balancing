@@ -1,96 +1,53 @@
-# 🌳 Árvore Binária de Busca (ABB) com Interface Gráfica – CustomTkinter
+# 🌌 Árvore Binária de Busca com Interface Gráfica
+### CustomTkinter • NetworkX • Matplotlib • Python
 
-Este projeto implementa uma Árvore Binária de Busca (ABB) em Python com uma interface gráfica moderna construída utilizando Tkinter e CustomTkinter.
+### Uma aplicação visual interativa para manipulação e analisar o comportamento de uma Árvore Binária de Busca (ABB) balanceada.
+### Desenvolvida com Tkinter + CustomTkinter e visualização gráfica por NetworkX e Matplotlib, a ferramenta permite criar, reorganizar e explorar árvores de forma intuitiva e dinâmica.
 
-# A aplicação permite:
+# 🔥 Recursos Principais
+### 🌱 Composição Inicial Inteligente
 
-➕ Adicionar elementos
+Recebe uma lista de valores numéricos
 
-🔍 Pesquisar elementos
+Remove duplicações e ordena automaticamente
 
-➖ Eliminar elementos (com reconstrução balanceada automática)
+Constrói uma árvore totalmente balanceada desde o início
 
-🧩 Gerar a árvore já equilibrada na composição inicial
+# ⚙️ Operações Disponíveis
+🔍 Pesquisar
 
-🖥️ Visualizar a estrutura da árvore em formato ASCII, incluindo galhos, posições e hierarquia
+Verifica se o valor está na árvore
 
-# 🚀 Funcionalidades
-✔ Composição Inicial
+O nó encontrado é realçado visualmente
 
-O usuário insere uma lista de valores (ex.: 15, 6, 18, 3, 7...)
+➕ Adicionar
 
-Os valores são automaticamente ordenados
+Insere um novo valor
 
-A árvore é construída balanceada, escolhendo o elemento central como raiz
+Reequilibra toda a estrutura automaticamente
 
-✔ Operações Disponíveis
-🔍 Pesquisar (P)
+➖ Eliminar
 
-Verifica se um valor está presente na árvore.
+Remove um valor informado
 
-➕ Adicionar (A)
+Reconstrói a árvore de forma balanceada com os valores restantes
 
-Insere um novo elemento
+## 🔭 Visualização Gráfica em Tempo Real
 
-Após isso a árvore é reconstruída e equilibrada
+A árvore é exibida como um grafo dinâmico, incluindo:
 
-➖ Eliminar (E)
+Nós grandes e destacados
 
-Remove um elemento
+Cores diferentes para operações (ex.: pesquisa)
 
-A estrutura é recriada para manter o balanceamento
+Hierarquia respeitando profundidade e ramificação
 
-# ✔ Visualização Estruturada
+Redesenho automático após qualquer ação
 
-A árvore é exibida como um desenho ASCII, com nós, níveis e ramificações.
+Tudo integrado diretamente na interface via Matplotlib + Tkinter.
 
-Exemplo:
-```bash
-
-       ___15____
-      /         \
-    _6_        _18_
-   /   \      /    \
-  3     7   17    20
-```
-
-# 🛠 Tecnologias Utilizadas
-
-Python 3.x
-
-Tkinter
-
-CustomTkinter
-
-Estruturas de dados (Árvore Binária de Busca)
-
-Recursão para busca, inserção, impressão e balanceamento
-
-# 📦 Instalação
-## 1. Instale as dependências #
-O projeto inclui um arquivo requirements.txt, contendo:
-customtkinter
-
-### Instale com: #
-pip install -r requirements.txt
-
-## 2. Execute o programa # 
-python main.py
-
-🖼 Interface da Aplicação
-
-Entrada de valores iniciais
-
-Botão para compor/reorganizar a árvore
-
-Seleção de operações (Pesquisar, Adicionar, Eliminar)
-
-Campo para inserir o valor da operação
-
-Exibição da árvore ASCII em tempo real
-
-# 🧠 Lógica da Árvore
-Classe EstruturaBuscaBinaria
+## 🧠 Estrutura Interna
+✨ Classe EstruturaBuscaBinaria
 
 Implementa:
 
@@ -100,48 +57,77 @@ Busca recursiva
 
 Travessia in-order
 
-Balanceamento completo da árvore
+Reconstrução balanceada
 
-Impressão ASCII detalhada
+Exportação da árvore para um grafo NetworkX
 
-Classe Estrutura_Interface
+## 🎨 Classe Estrutura_Interface
 
-Gerencia:
+Responsável por:
 
-Entradas do usuário
+Interface gráfica com CustomTkinter
 
-Mensagens e feedback visual
+Entrada de valores e validação
 
-Execução das operações (P / A / E)
+Controle das operações (Pesquisar, Adicionar, Eliminar)
 
-Atualização da área de visualização
+Atualização do grafo na tela
 
-# 🗂 Estrutura do Projeto
+Feedback visual colorido
+
+# 🛠 Tecnologias Utilizadas
+
+Python 3.x
+
+Tkinter
+
+CustomTkinter
+
+NetworkX
+
+Matplotlib
+
+Programação orientada a objetos
+
+Recursão em estruturas de dados
+
+# 📦 Instalação
+###1. Instale as dependências
+pip install -r requirements.txt
+
+### 2. Execute a aplicação
+python main.py
+
+## 🗂 Estrutura do Projeto
 ```bash
 📁 projeto/
- ├── 📄 main.py            → Código completo da árvore + interface
- ├── 📄 requirements.txt   → Lista de dependências
- └── 📄 README.md          → Este arquivo
+ ├── main.py               # Código da árvore + interface gráfica
+ ├── requirements.txt      # Dependências
+ └── README.md             # Documento atual
+```
+## 🧪 Exemplo de Entrada
+```bash
+15, 6, 18, 3, 7, 17, 20, 2, 4, 13, 9, 10, 8, 16, 19
 ```
 
-🧪 Exemplo de Entrada
-## 15, 6, 18, 3, 7, 17, 20, 2, 4, 13, 9, 10, 8, 16, 19 
-### A aplicação automaticamente:
+A aplicação irá:
 
-Ordena os valores
+Remover duplicados
 
-Gera uma árvore balanceada
+Ordenar
 
-Exibe a estrutura visualmente
+Criar automaticamente uma ABB equilibrada
 
-✨ Características Especiais
+Exibir graficamente
 
-🌈 Interface moderna com CustomTkinter (modo escuro)
+##✨ Destaques
 
-🧩 Árvore sempre equilibrada após qualquer modificação
+Interface moderna com modo escuro
 
-🔄 Atualização instantânea da interface
+Árvore sempre balanceada após qualquer modificação
 
-⚠️ Mensagens coloridas (erro, aviso, sucesso)
+Visualização clara e responsiva
 
-📐 Impressão ASCII altamente legível
+Mensagens coloridas (erro, aviso e sucesso)
+
+Manipulação extremamente intuitiva
