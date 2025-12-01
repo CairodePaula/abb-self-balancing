@@ -1,6 +1,10 @@
 import tkinter as tk
 from tkinter import messagebox
-from customtkinter import * #pip install requirements
+from customtkinter import *
+
+import matplotlib.pyplot as plt
+import networkx as nx
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 class Vertice:
     def __init__(self, dado):
@@ -16,22 +20,18 @@ class EstruturaBuscaBinaria:
         self.ponto_inicial = self._adicionar_recursivo(self.ponto_inicial, dado)
 
     def _adicionar_recursivo(self, vertice, dado):
-        if vertice is None:
-            return Vertice(dado)
+        if vertice is None: return Vertice(dado)
         if dado < vertice.dado:
             vertice.esquerda = self._adicionar_recursivo(vertice.esquerda, dado)
         elif dado > vertice.dado:
             vertice.direita = self._adicionar_recursivo(vertice.direita, dado)
         return vertice
 
-    def buscar_dado(self, dado):
-        return self._buscar_recursivo(self.ponto_inicial, dado)
+    def buscar_dado(self, dado): return self._buscar_recursivo(self.ponto_inicial, dado)
 
     def _buscar_recursivo(self, vertice, dado):
-        if vertice is None or vertice.dado == dado:
-            return vertice is not None
-        if dado < vertice.dado:
-            return self._buscar_recursivo(vertice.esquerda, dado)
+        if vertice is None or vertice.dado == dado: return vertice is not None
+        if dado < vertice.dado: return self._buscar_recursivo(vertice.esquerda, dado)
         return self._buscar_recursivo(vertice.direita, dado)
 
     def obter_elementos_em_ordem(self):
@@ -46,15 +46,11 @@ class EstruturaBuscaBinaria:
             self._percurso_em_ordem(vertice.direita, elementos)
     
     def _compor_estrutura_balanceada_recursiva(self, elementos):
-        if not elementos:
-            return None
-        
+        if not elementos: return None
         meio = len(elementos) // 2
         vertice_inicio = Vertice(elementos[meio])
-        
         vertice_inicio.esquerda = self._compor_estrutura_balanceada_recursiva(elementos[:meio])
         vertice_inicio.direita = self._compor_estrutura_balanceada_recursiva(elementos[meio + 1:])
-        
         return vertice_inicio
 
     def eliminar(self, dado):
@@ -62,75 +58,37 @@ class EstruturaBuscaBinaria:
             return False, f"❌ Dado {dado} indisponivel para eliminacao."
             
         lista_ordenada = self.obter_elementos_em_ordem()
-        lista_ordenada.remove(dado)
+        try:
+             lista_ordenada.remove(dado)
+        except ValueError:
+            return False, f"❌ Erro ao remover {dado}."
         
         self.ponto_inicial = None
-        
         self.ponto_inicial = self._compor_estrutura_balanceada_recursiva(lista_ordenada)
-            
         return True, f"✅ Dado {dado} eliminado e o arranjo foi refeito/equilibrado."
     
-    def apresentar_estrutura_em_texto(self):
-        if not self.ponto_inicial:
-            return "Arranjo de dados vazio."
-        linhas, _, _, _ = self._auxilio_apresentacao(self.ponto_inicial)
-        texto_estrutura = "\n".join(linhas)
-        return texto_estrutura
-
-    def _auxilio_apresentacao(self, vertice):
-        if vertice.direita is None and vertice.esquerda is None:
-            linha = str(vertice.dado)
-            largura = len(linha)
-            altura = 1
-            return [linha], largura, altura, largura // 2
-
-        if vertice.direita is None:
-            linhas, n, p, x = self._auxilio_apresentacao(vertice.esquerda)
-            s = str(vertice.dado)
-            largura = len(s)
-            linha_primeira = (x + 1) * ' ' + (n - x - 1) * '_' + s
-            linha_segunda = x * ' ' + '/' + (n - x - 1 + largura) * ' '
-            linhas_deslocadas = [linha + largura * ' ' for linha in linhas]
-            return [linha_primeira, linha_segunda] + linhas_deslocadas, n + largura, p + 2, n + largura // 2
-
-        if vertice.esquerda is None:
-            linhas, n, p, x = self._auxilio_apresentacao(vertice.direita)
-            s = str(vertice.dado)
-            largura = len(s)
-            linha_primeira = s + x * '_' + (n - x) * ' '
-            linha_segunda = (largura + x) * ' ' + '\\' + (n - x - 1) * ' '
-            linhas_deslocadas = [largura * ' ' + linha for linha in linhas]
-            return [linha_primeira, linha_segunda] + linhas_deslocadas, n + largura, p + 2, largura // 2
-
-        esquerda_blocos, n, p, x = self._auxilio_apresentacao(vertice.esquerda)
-        direita_blocos, m, q, y = self._auxilio_apresentacao(vertice.direita)
-        s = str(vertice.dado)
-        largura = len(s)
-        
-        linha_primeira = (x + 1) * ' ' + (n - x - 1) * '_' + s + y * '_' + (m - y) * ' '
-        linha_segunda = x * ' ' + '/' + (n - x - 1 + largura + y) * ' ' + '\\' + (m - y - 1) * ' '
-        
-        if p < q:
-            esquerda_blocos += [n * ' '] * (q - p)
-        elif q < p:
-            direita_blocos += [m * ' '] * (p - q)
-            
-        linhas = [linha_primeira, linha_segunda] + [a + largura * ' ' + b for a, b in zip(esquerda_blocos, direita_blocos)]
-        return linhas, n + m + largura, max(p, q) + 2, n + largura // 2
+    def gerar_grafo(self):
+        G = nx.DiGraph()
+        def adicionar_vertice_e_arestas(vertice, pai=None, relacao=None):
+            if vertice:
+                G.add_node(vertice.dado)
+                if pai is not None:
+                    G.add_edge(pai.dado, vertice.dado, relacao=relacao)
+                adicionar_vertice_e_arestas(vertice.esquerda, vertice, 'esquerda')
+                adicionar_vertice_e_arestas(vertice.direita, vertice, 'direita')
+        adicionar_vertice_e_arestas(self.ponto_inicial)
+        return G
 
 class Estrutura_Interface:
     def __init__(self, janela_principal):
         self.janela_principal = janela_principal
         janela_principal.title("🌌 Arvore Binaria de Busca (ABB) - CustomTkinter")
-        janela_principal.geometry("1000x750")
-
+        janela_principal.geometry("1200x800")
         set_appearance_mode("Dark") 
         set_default_color_theme("blue")
-
         self.apb = EstruturaBuscaBinaria()
         self.funcao_selecionada = StringVar(value="P")
         self.status_operacao = StringVar()
-        
         entrada_padrao = "15, 6, 18, 3, 7, 17, 20, 2, 4, 13, 9, 10, 8, 16, 19, 21, 1, 5, 12, 14, 22, 0, 25, 23, 24"
 
         principal_quadro = CTkFrame(janela_principal, fg_color="transparent")
@@ -141,14 +99,14 @@ class Estrutura_Interface:
         CTkLabel(configuracao_quadro, text="🔮 Configuracao Inicial", font=CTkFont(weight="bold")).pack(pady=(10, 5), padx=10)
 
         funcoes_quadro = CTkFrame(principal_quadro, corner_radius=10)
-        funcoes_quadro.grid(row=0, column=1, sticky="n", padx=10, pady=10)
+        funcoes_quadro.grid(row=1, column=0, sticky="n", padx=10, pady=10)
         CTkLabel(funcoes_quadro, text="🚀 Operacoes", font=CTkFont(weight="bold")).pack(pady=(10, 5), padx=10)
 
         visualizacao_quadro = CTkFrame(principal_quadro, corner_radius=10)
-        visualizacao_quadro.grid(row=0, column=2, rowspan=2, sticky="nsew", padx=10, pady=10)
-        CTkLabel(visualizacao_quadro, text="🔭 Representacao da Arvore", font=CTkFont(weight="bold")).pack(pady=(10, 5))
+        visualizacao_quadro.grid(row=0, column=1, rowspan=2, sticky="nsew", padx=10, pady=10)
+        CTkLabel(visualizacao_quadro, text="🔭 Representacao Grafica da Arvore", font=CTkFont(weight="bold")).pack(pady=(10, 5))
 
-        principal_quadro.grid_columnconfigure(2, weight=1)
+        principal_quadro.grid_columnconfigure(1, weight=1)
         principal_quadro.grid_rowconfigure(0, weight=1)
 
         CTkLabel(configuracao_quadro, text="Valores:").pack(anchor="w", padx=10)
@@ -163,7 +121,6 @@ class Estrutura_Interface:
         self.rotulo_status.pack(pady=5, padx=10)
 
         CTkLabel(funcoes_quadro, text="Escolha o procedimento:").pack(anchor="w", padx=10)
-        
         CTkRadioButton(funcoes_quadro, text="Pesquisar (P)", variable=self.funcao_selecionada, value="P").pack(anchor="w", padx=10)
         CTkRadioButton(funcoes_quadro, text="Adicionar (A)", variable=self.funcao_selecionada, value="A").pack(anchor="w", padx=10)
         CTkRadioButton(funcoes_quadro, text="Eliminar (E) -> Refaz/Equilibra", variable=self.funcao_selecionada, value="E").pack(anchor="w", padx=10)
@@ -175,40 +132,31 @@ class Estrutura_Interface:
         self.botao_executar = CTkButton(funcoes_quadro, text="Executar Procedimento", command=self.executar_procedimento, fg_color="#DA70D6")
         self.botao_executar.pack(pady=10, padx=10, fill='x')
 
-        self.expositor_estrutura = CTkTextbox(visualizacao_quadro, wrap="none", height=20, width=50, font=("Courier", 12))
-        self.expositor_estrutura.pack(fill=BOTH, expand=True, padx=10, pady=10)
+        self.figure = plt.Figure(figsize=(5, 4), dpi=100)
+        self.canvas = FigureCanvasTkAgg(self.figure, master=visualizacao_quadro)
+        self.canvas_widget = self.canvas.get_tk_widget()
+        self.canvas_widget.pack(fill=BOTH, expand=True, padx=10, pady=10)
         
         self.compor_estrutura() 
 
-    def processar_entrada(self, texto_entrada):
-        texto_entrada = texto_entrada.replace(' ', ',')
+    def compor_estrutura(self):
+        texto_entrada = self.campo_entrada.get().replace(' ', ',')
         partes = [p.strip() for p in texto_entrada.split(',') if p.strip()]
         
-        numeros = []
-        for parte in partes:
-            try:
-                numeros.append(int(parte))
-            except ValueError:
-                raise ValueError(f"O item '{parte}' nao e um valor inteiro valido.")
-        return numeros
-
-    def compor_estrutura(self):
-        texto_entrada = self.campo_entrada.get()
         try:
-            valores_iniciais = self.processar_entrada(texto_entrada)
+            valores_iniciais = sorted(list(set([int(p) for p in partes])))
             
             self.apb = EstruturaBuscaBinaria()
-            valores_iniciais.sort()
             self.apb.ponto_inicial = self.apb._compor_estrutura_balanceada_recursiva(valores_iniciais)
             
-            self.status_operacao.set(f"✅ Arvore construida com {len(self.apb.obter_elementos_em_ordem())} vertices/Elementos.")
+            self.status_operacao.set(f"✅ Arvore construida com {len(self.apb.obter_elementos_em_ordem())} elementos.")
             self.rotulo_status.configure(text_color="green")
             self.apresentar_estrutura()
             
         except ValueError as e:
-            self.status_operacao.set(f"❌ Erro na Insercao.")
+            self.status_operacao.set(f"❌ Erro: Valor invalido.")
             self.rotulo_status.configure(text_color="red")
-            messagebox.showerror("Erro na Insercao", str(e))
+            messagebox.showerror("Erro na Insercao", "Apenas numeros inteiros separados por virgula são permitidos.")
             self.apb = EstruturaBuscaBinaria()
             self.apresentar_estrutura()
 
@@ -218,63 +166,77 @@ class Estrutura_Interface:
         
         if not texto_valor_operacao:
             self.status_operacao.set("⚠️ Insira um valor para o procedimento.")
-            self.rotulo_status.configure(text_color="orange")
-            return
+            self.rotulo_status.configure(text_color="orange"); return
 
-        try:
-            valor = int(texto_valor_operacao)
+        try: valor = int(texto_valor_operacao)
         except ValueError:
             self.status_operacao.set("❌ Erro: O valor deve ser um numero inteiro.")
-            self.rotulo_status.configure(text_color="red")
-            return
+            self.rotulo_status.configure(text_color="red"); return
 
-        mensagem = ""
-        estrutura_modificada = False
+        mensagem = ""; estrutura_modificada = False
         
         if tipo_operacao == 'A':
             if self.apb.buscar_dado(valor):
-                mensagem = f"⚠️ Valor {valor} ja se encontra presente. Nada foi alterado."
-                self.rotulo_status.configure(text_color="orange")
+                mensagem = f"⚠️ Valor {valor} ja esta presente."
             else:
                 self.apb.adicionar_dado(valor)
-                lista_ordenada = self.apb.obter_elementos_em_ordem()
-                self.apb.ponto_inicial = self.apb._compor_estrutura_balanceada_recursiva(lista_ordenada)
-                
-                mensagem = f"✅ Valor {valor} adicionado e arranjo equilibrado."
-                estrutura_modificada = True
+                self.apb.ponto_inicial = self.apb._compor_estrutura_balanceada_recursiva(self.apb.obter_elementos_em_ordem())
+                mensagem = f"✅ Valor {valor} adicionado e arranjo equilibrado."; estrutura_modificada = True
             
         elif tipo_operacao == 'E':
             sucesso, msg = self.apb.eliminar(valor)
-            mensagem = msg
-            estrutura_modificada = sucesso
+            mensagem = msg; estrutura_modificada = sucesso
             
         elif tipo_operacao == 'P':
-            if self.apb.buscar_dado(valor):
-                mensagem = f"✅ Valor {valor} esta no arranjo."
-            else:
-                mensagem = f"❌ Valor {valor} nao esta no arranjo."
+            mensagem = f"✅ Valor {valor} esta no arranjo." if self.apb.buscar_dado(valor) else f"❌ Valor {valor} nao esta no arranjo."
         
-        if tipo_operacao != 'A' or not mensagem.startswith("⚠️"):
-            self.status_operacao.set(mensagem)
-            if mensagem.startswith("✅"):
-                self.rotulo_status.configure(text_color="green")
-            elif mensagem.startswith("❌"):
-                self.rotulo_status.configure(text_color="red")
-            elif mensagem.startswith("⚠️"):
-                self.rotulo_status.configure(text_color="orange")
-            else:
-                self.rotulo_status.configure(text_color="white")
+        self.status_operacao.set(mensagem)
+        if mensagem.startswith("✅"): self.rotulo_status.configure(text_color="green")
+        elif mensagem.startswith("❌"): self.rotulo_status.configure(text_color="red")
+        elif mensagem.startswith("⚠️"): self.rotulo_status.configure(text_color="orange")
+        else: self.rotulo_status.configure(text_color="white")
 
-        if estrutura_modificada:
-            self.apresentar_estrutura()
+        if estrutura_modificada or tipo_operacao == 'P':
+            self.apresentar_estrutura(valor if tipo_operacao == 'P' else None)
             
-    def apresentar_estrutura(self):
-        texto_estrutura = self.apb.apresentar_estrutura_em_texto()
-        self.expositor_estrutura.delete('1.0', END)
+    def apresentar_estrutura(self, valor_procurado=None):
+        G = self.apb.gerar_grafo()
+        self.figure.clear(); ax = self.figure.add_subplot(111)
         
-        quantidade_valores = len(self.apb.obter_elementos_em_ordem())
-        self.expositor_estrutura.insert(END, f"Total de valores: {quantidade_valores}\n\n")
-        self.expositor_estrutura.insert(END, texto_estrutura)
+        if G.number_of_nodes() == 0:
+            ax.text(0.5, 0.5, "Árvore Vazia", ha='center', va='center', fontsize=20, color='white')
+            ax.set_xticks([]); ax.set_yticks([]); self.canvas.draw(); return
+            
+        pos = self._calcular_posicoes_arvore(G, self.apb.ponto_inicial.dado)
+        node_colors = ['#00BFFF' if node != valor_procurado else '#FFD700' for node in G.nodes()]
+        
+        nx.draw(G, pos, ax=ax, with_labels=True, node_size=2000, node_color=node_colors, 
+                font_size=12, font_weight='bold', font_color='black', edge_color='#A9A9A9', arrows=False)
+        
+        ax.set_title(f"ABB Balanceada - {G.number_of_nodes()} Nós", color='white')
+        self.canvas.draw()
+        
+    def _calcular_posicoes_arvore(self, G, raiz, largura=1.0, altura=1.0, x=0, y=0, pos=None, nivel=1):
+        if pos is None: pos = {raiz: (x, y)}
+        vizinhos = list(G.successors(raiz))
+        
+        if vizinhos:
+            largura_total = largura; largura_segmento = largura_total / len(vizinhos)
+            x_atual = x - (largura_total / 2) + (largura_segmento / 2)
+            
+            for vizinho in vizinhos:
+                relacao = G.get_edge_data(raiz, vizinho)['relacao']
+                
+                if relacao == 'esquerda': x_novo = x_atual - largura_segmento/4
+                else: x_novo = x_atual + largura_segmento/4
+
+                y_novo = y - altura
+                pos[vizinho] = (x_novo, y_novo)
+                
+                self._calcular_posicoes_arvore(G, vizinho, largura_segmento, altura, x_novo, y_novo, pos, nivel + 1)
+                x_atual += largura_segmento
+        return pos
+
 
 if __name__ == "__main__":
     janela_mestra = CTk()
