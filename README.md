@@ -120,7 +120,7 @@ Criar automaticamente uma ABB equilibrada
 
 Exibir graficamente
 
-##✨ Destaques
+## ✨ Destaques
 
 Interface moderna com modo escuro
 
